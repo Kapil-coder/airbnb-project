@@ -1,12 +1,17 @@
+require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
+
+
 const mongoose= require("mongoose");
 const initData = require("./data.js");
 const Listing = require("../models/listing.js");
 
-const MONGO_URL= "mongodb://127.0.0.1:27017/wandernest"
+const dbUrl= process.env.MONGO_URL;
 
 async function main() {
-  await mongoose.connect(MONGO_URL);
+  await mongoose.connect(dbUrl);
 }
+
+
 
 main().then(()=>{
     console.log("Connected to db");
