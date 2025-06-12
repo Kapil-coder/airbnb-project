@@ -107,6 +107,6 @@ app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Something went wrong!" } = err;
   res.status(statusCode).render("listings/error", { message });
 });
-app.listen(8080, () => {
+app.listen(3000, () => {
   console.log("Server is working");
 });
