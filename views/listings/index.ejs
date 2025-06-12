@@ -1,0 +1,128 @@
+
+
+<!-- <h3>All Listings</h3> -->
+<% layout("/layouts/boilerplate") %>
+
+<div class="filter-row">
+  <!-- Left scroll button -->
+  <button class="scroll-btn left">&#8249;</button>
+
+  <!-- Filter scroll area -->
+  <div class="filter-wrapper">
+    <div id="filters-scroll">
+      <% categories.forEach(cat => { %>
+        <a
+          href="/listings?category=<%= cat %>"
+          class="filter <%= selectedCategory === cat ? 'active-filter' : '' %>"
+        >
+          <% if (cat === "Trending") { %><i class="fa-solid fa-fire-flame-curved"></i>
+          <% } else if (cat === "Rooms") { %><i class="fa-solid fa-bed"></i>
+          <% } else if (cat === "Iconic Cities") { %><i class="fa-solid fa-mountain-city"></i>
+          <% } else if (cat === "Surfing") { %><i class="fa-solid fa-person-swimming"></i>
+          <% } else if (cat === "Farms") { %><i class="fa-solid fa-cow"></i>
+          <% } else if (cat === "Mountains") { %><i class="fa-solid fa-mountain"></i>
+          <% } else if (cat === "Camping") { %><i class="fa-solid fa-tents"></i>
+          <% } else if (cat === "Beach") { %><i class="fa-solid fa-umbrella-beach"></i>
+          <% } else if (cat === "Clubs") { %><i class="fa-solid fa-martini-glass-citrus"></i>
+          <% } else if (cat === "Dome") { %><i class="fa-solid fa-landmark-dome"></i>
+          <% } else if (cat === "Boats") { %><i class="fa-solid fa-sailboat"></i>
+          <% } %>
+          <p><%= cat %></p>
+        </a>
+      <% }); %>
+    </div>
+  </div>
+
+  <!-- Right scroll button -->
+  <button class="scroll-btn right">&#8250;</button>
+
+  <!-- Tax Toggle -->
+  <div class="Tax-toggle">
+    <div class="form-check-reverse form-switch">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        role="switch"
+        id="switchCheckDefault"
+      />
+      <label class="form-check-label" for="switchCheckDefault">
+        <span class="toggle-label-text">Display Total After Taxes</span>
+        <i
+          class="fas fa-info-circle toggle-label-icon ms-2"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="Display Total After Taxes"
+        ></i>
+      </label>
+    </div>
+  </div>
+</div>
+<div class="deal-of-day card shadow-sm mb-4 p-4 d-flex flex-row align-items-center justify-content-between">
+  <div class="d-flex align-items-center gap-3">
+    <i class="fa-solid fa-bolt flash-icon"></i>
+    <div>
+      <h5 class="mb-1 fw-bold">Deal of the Day</h5>
+      <p class="mb-0 text-muted small">Exclusive discounts ending soon! Don’t miss out.</p>
+      
+    </div>
+  </div>
+  <a href="/listings?deal=today" class="btn btn-danger">Explore</a>
+</div>
+
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+  <% for(let listing of allListings) { %>
+    <a href="/listings/<%= listing._id %>" class="listing-link">
+      <div class="card listing-card">
+        <img src="<%= listing.image.url %>" class="card-img-top" alt="listing-img" style="height: 20rem;" />
+
+        <% if (listing.badge) { %>
+          <span class="badge-overlay badge-<%= listing.badge %>"><%= listing.badge.toUpperCase() %></span>
+        <% } %>
+
+        <div class="card-img-overlay"></div>
+        <div class="card-body">
+          <p class="card-text fw-bold mb-1"><%= listing.title %></p>
+
+          <div class="dynamic-price">
+            <% if (listing.discountedPrice && listing.discountedPrice < listing.price) {
+                const discountPercent = Math.round(((listing.price - listing.discountedPrice) / listing.price) * 100);
+            %>
+              <div class="d-flex align-items-center flex-wrap gap-2">
+                <span class="text-danger fw-semibold fs-5">
+                  ₹ <%= listing.discountedPrice.toLocaleString("en-IN") %>
+                </span>
+                <del class="text-muted fs-6">
+                  ₹ <%= listing.price.toLocaleString("en-IN") %>
+                </del>
+                <span class="bg-success text-white px-2 py-1 rounded small">
+                  Save <%= discountPercent %>%
+                </span>
+              </div>
+              <div class="with-tax text-muted small mt-1" style="display: none;">
+                Total (incl. GST): ₹ <%= Math.round(listing.discountedPrice * 1.13).toLocaleString("en-IN") %>
+              </div>
+            <% } else { %>
+              <div class="fw-semibold fs-5">
+                ₹ <%= listing.price.toLocaleString("en-IN") %>
+              </div>
+              <div class="with-tax text-muted small mt-1" style="display: none;">
+                Total (incl. GST): ₹ <%= Math.round(listing.price * 1.13).toLocaleString("en-IN") %>
+              </div>
+            <% } %>
+
+            <i class="tax-info small text-muted">+ 13% GST</i>
+          </div>
+        </div>
+      </div>
+    </a>
+  <% } %>
+</div>
+
+
+
+
+
+ 
+
+

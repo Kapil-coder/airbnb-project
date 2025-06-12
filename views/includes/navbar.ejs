@@ -1,0 +1,59 @@
+<style>
+  .btn-search{
+    background-color: #fe424d;
+    color: #fff;
+    border-radius: 25px;
+    padding: 0 1rem 0 1rem;
+  }
+  .btn-search:hover{
+    background-color: #fe424d;
+    color: #fff;
+  }
+  .btn-search i{
+    display: inline;
+    margin-right: 0.5rem;
+  }
+  .search-inp{
+    border-radius: 25px;
+    padding: 0.5rem 3rem 0.5rem 3rem;
+    font-size: 1rem;
+  }
+</style>
+<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/listings"><i class="fa-solid fa-earth-americas"></i></a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <ul class="navbar-nav w-100 d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <div class="d-flex flex-column flex-md-row align-items-center gap-2">
+          <li class="nav-item">
+            <a class="brand-name" href="/listings">WonderNest</a>
+          </li>
+          
+        </div>
+
+        <form class="d-flex my-2 my-md-0" role="search">
+          <input class="form-control me-2 search-inp" type="search" placeholder="Search destinations" />
+          <button class="btn btn-search" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+        </form>
+
+        <div class="d-flex flex-column flex-md-row align-items-center gap-2 mt-3 mt-md-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/listings/new"><b>+Become you host</b></a>
+          </li>
+          <% if (!CurrentUser) { %>
+            <a class="nav-link" href="/signup"><b>Signup</b></a>
+            <a class="nav-link" href="/login"><b>Log in</b></a>
+          <% } else { %>
+            <a class="nav-link" href="/logout">Log out</a>
+          <% } %>
+        </div>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,219 @@
+<% layout("/layouts/boilerplate") %>
+<div class="row mt-3">
+  <div class="col-8 offset-3">
+    <h3><b><%= listing.title%></b></h3>
+  </div>
+
+  <div class="card col-6 offset-3 card-show listing-card">
+    <img
+      src="<%= listing.image.url %>"
+      class="card-img-top show-img"
+      alt="listing_image"
+    />
+    <div class="card-body">
+        <div class="owner-description mb-4">
+  <p class="text-secondary mb-1" style="font-size: 0.95rem;">
+    <i class="fa fa-user me-2"></i>Hosted by <span class="fw-semibold"><%= listing.owner.username %></span>
+  </p>
+  <p class="text-muted" style="font-size: 1rem; line-height: 1.6;">
+    <%= listing.description %>
+  </p>
+</div>
+
+       <% 
+        const hasDiscount = listing.discountedPrice && listing.discountedPrice < listing.price;
+        const basePrice = listing.price;
+        const discountedPrice = listing.discountedPrice;
+        const taxInclusive = hasDiscount ? Math.round(discountedPrice * 1.13) : Math.round(basePrice * 1.13);
+      %>
+
+      <% if (hasDiscount) {
+          const discountPercent = Math.round(((basePrice - discountedPrice) / basePrice) * 100);
+      %>
+        <div class="d-flex align-items-center flex-wrap gap-2 mt-2">
+          <span class="text-danger fw-semibold fs-5">
+            ₹ <%= discountedPrice.toLocaleString("en-IN") %>
+          </span>
+          <del class="text-muted fs-6">
+            ₹ <%= basePrice.toLocaleString("en-IN") %>
+          </del>
+          <span class="bg-success text-white px-2 py-1 rounded small">
+            Save <%= discountPercent %>%
+          </span>
+        </div>
+      <% } else { %>
+        <div class="mt-2">
+          <span class="fw-semibold fs-5">
+            ₹ <%= basePrice.toLocaleString("en-IN") %>
+          </span>
+        </div>
+      <% } %>
+
+      
+      <p class="text-muted with-tax">Total incl. GST: ₹ <%= taxInclusive.toLocaleString("en-IN") %> <span class="tax-note">(13% GST)</span></p>
+      <div class="mt-4">
+  <h5 class="fw-bold mb-3">Amenities</h5>
+  <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+    <div class="col d-flex align-items-center">
+      <i class="fa-solid fa-wifi me-2 text-primary"></i> Free WiFi
+    </div>
+    <div class="col d-flex align-items-center">
+      <i class="fa-solid fa-snowflake me-2 text-info"></i> Air Conditioning
+    </div>
+    <div class="col d-flex align-items-center">
+      <i class="fa-solid fa-car me-2 text-secondary"></i> Parking
+    </div>
+    <div class="col d-flex align-items-center">
+      <i class="fa-solid fa-utensils me-2 text-danger"></i> Kitchen
+    </div>
+    <div class="col d-flex align-items-center">
+      <i class="fa-solid fa-tv me-2 text-warning"></i> TV
+    </div>
+    <div class="col d-flex align-items-center">
+      <i class="fa-solid fa-dumbbell me-2 text-success"></i> Gym
+    </div>
+    <div class="col d-flex align-items-center">
+      <i class="fa-solid fa-shower me-2 text-info"></i> Private Bathroom
+    </div>
+    <div class="col d-flex align-items-center">
+      <i class="fa-solid fa-paw me-2 text-primary"></i> Pet Friendly
+    </div>
+  </div>
+</div>
+      <div class="mt-4">
+  <h5 class="fw-bold mb-2">Location</h5>
+  <div class="d-flex align-items-center mb-2">
+    <i class="fa-solid fa-location-dot me-2 text-danger"></i>
+    <span><%= listing.location %></span>
+  </div>
+  <div class="d-flex align-items-center">
+    <i class="fa-solid fa-globe me-2 text-primary"></i>
+    <span><%= listing.country %></span>
+  </div>
+</div>
+
+    </div>
+  </div>
+  
+  <% if(CurrentUser && listing.owner._id.equals(CurrentUser._id)) { %>
+  <div class="btns">
+    <a
+      href="/listings/<%=listing._id %>/edit"
+      class="btn btn-dark col-1 offset-3 edit-btn"
+    >
+      Edit</a>
+    
+    <form method="POST" action="/listings/<%=listing._id %>?_method=DELETE">
+      <button class="btn btn-dark offset-5">Delete</button>
+    </form>
+    
+  </div>
+  <% } else { %>
+  <div class="text-center mt-3">
+    <a href="/booking/<%= listing._id %>" class="btn btn-danger px-4 py-2 col-6">Book Now</a>
+  </div>
+  
+  <% } %>
+
+  <div class="col-8 offset-3 mb-3">
+    <hr />
+    <% if(CurrentUser){ %>
+    <h4>Leave a Review</h4>
+
+    <form
+      action="/listings/<%=listing._id %>/review"
+      method="POST"
+      novalidate
+      class="needs-validation"
+    >
+      <div class="mb-3 mt-3">
+        <label for="rating" class="form-label">Rating</label>
+        <fieldset class="starability-slot">
+          <input
+            type="radio"
+            id="no-rate"
+            class="input-no-rate"
+            name="review[rating]"
+            value="1"
+            checked
+            aria-label="No rating."
+          />
+          <input
+            type="radio"
+            id="first-rate1"
+            name="review[rating]"
+            value="1"
+          />
+          <label for="first-rate1" title="Terrible">1 star</label>
+          <input
+            type="radio"
+            id="first-rate2"
+            name="review[rating]"
+            value="2"
+          />
+          <label for="first-rate2" title="Not good">2 stars</label>
+          <input
+            type="radio"
+            id="first-rate3"
+            name="review[rating]"
+            value="3"
+          />
+          <label for="first-rate3" title="Average">3 stars</label>
+          <input
+            type="radio"
+            id="first-rate4"
+            name="review[rating]"
+            value="4"
+          />
+          <label for="first-rate4" title="Very good">4 stars</label>
+          <input
+            type="radio"
+            id="first-rate5"
+            name="review[rating]"
+            value="5"
+          />
+          <label for="first-rate5" title="Amazing">5 stars</label>
+        </fieldset>
+      </div>
+      <div class="mb-3 mt-3">
+        <label for="comment" class="form-label">Comments</label>
+        <textarea
+          name="review[comment]"
+          id="comment"
+          class="form-control"
+          cols="30"
+          rows="5"
+          required
+        ></textarea>
+        <div class="invalid-feedback">Please add some comments for review</div>
+      </div>
+      <button class="btn btn-outline-dark">Submit</button>
+    </form>
+    <hr />
+    <% } %>
+
+    <p><b>All Reviews</b></p>
+    <div class="row">
+      <% for(review of listing.review){ %>
+      <div class="card col-5 mb-3 ms-3">
+        <div class="card-body">
+          <h5 class="card-title">@<%= review.author.username %></h5>
+          <p
+            class="starability-result card-text"
+            data-rating="<%= review.rating %>"
+          ></p>
+          <p class="card-text"><%= review.comment %></p>
+
+          <form
+            class="mb-3"
+            method="POST"
+            action="/listings/<%=listing._id %>/review/<%=review._id %>?_method=DELETE"
+          >
+            <button class="btn btn-sm btn-dark">Delete</button>
+          </form>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>

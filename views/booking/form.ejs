@@ -1,0 +1,166 @@
+<% layout("/layouts/boilerplate") %>
+<% const finalPrice = listing.discountPrice || listing.price; %>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h4 class="mb-4 text-center">Book: <%= listing.title %></h4>
+
+          <form method="POST" action="/booking/<%= listing._id %>" class="needs-validation" novalidate>
+
+            <!-- Price Per Night -->
+            <div class="mb-3">
+              <label class="form-label">Price per Night</label>
+              <div class="form-control bg-light">
+                ₹<%= finalPrice %>
+                <% if (listing.discountPrice) { %>
+                  <span class="ms-2 text-muted small">
+                    <s>₹<%= listing.price %></s>
+                  </span>
+                  <span class="ms-2 text-success fw-semibold">→ ₹<%= listing.discountPrice %></span>
+                <% } %>
+              </div>
+            </div>
+
+            <!-- Full Name -->
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" name="fullname" class="form-control" required />
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" required />
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" name="phone" class="form-control" pattern="[0-9]{10}" required />
+            </div>
+
+            <!-- Guests & Children -->
+            <div class="row">
+              <div class="mb-3 col-md-6">
+                <label class="form-label">Guests</label>
+                <input type="number" name="guests" class="form-control" min="1" required />
+              </div>
+              <div class="mb-3 col-md-6">
+                <label class="form-label">Children</label>
+                <input type="number" name="children" class="form-control" min="0" required />
+              </div>
+            </div>
+
+            <!-- Dates -->
+            <div class="row">
+              <div class="mb-3 col-md-6">
+                <label class="form-label">Check-In</label>
+                <input type="date" name="checkin" class="form-control" required />
+              </div>
+              <div class="mb-3 col-md-6">
+                <label class="form-label">Check-Out</label>
+                <input type="date" name="checkout" class="form-control" required />
+              </div>
+            </div>
+
+            <!-- Promo Code -->
+            <div class="mb-3">
+              <label class="form-label">Promo Code (optional)</label>
+              <input type="text" id="promoCode" name="promoCode" class="form-control" placeholder="SAVE10" />
+            </div>
+
+            <!-- Special Requests -->
+            <div class="mb-3">
+              <label class="form-label">Special Requests</label>
+              <textarea name="specialRequests" class="form-control" rows="2" placeholder="Any requests (optional)"></textarea>
+            </div>
+
+            <!-- Total Price -->
+            <div class="mb-3">
+              <label class="form-label">Total Price</label>
+              <input type="text" id="totalPrice" class="form-control bg-light" readonly />
+            </div>
+
+            <!-- Hidden Fields -->
+            <input type="hidden" name="totalPrice" id="hiddenTotalPrice" />
+            <input type="hidden" name="nights" id="hiddenNights" />
+            <input type="hidden" name="discountRate" id="hiddenDiscountRate" />
+            <input type="hidden" name="childCost" id="hiddenChildCost" />
+            <input type="hidden" name="tax" id="hiddenTax" />
+
+            <button class="btn btn-dark w-100">Confirm Booking</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const pricePerNight = <%- finalPrice %>;
+    const GST_RATE = 0.13;
+    const CHILD_CHARGE = 50;
+
+    const promoCodes = {
+      SAVE10: 0.10,
+      SAVE20: 0.20,
+    };
+
+    const checkinInput = document.querySelector('input[name="checkin"]');
+    const checkoutInput = document.querySelector('input[name="checkout"]');
+    const childrenInput = document.querySelector('input[name="children"]');
+    const promoCodeInput = document.getElementById("promoCode");
+    const totalPriceInput = document.getElementById("totalPrice");
+
+    const hiddenTotal = document.getElementById("hiddenTotalPrice");
+    const hiddenNights = document.getElementById("hiddenNights");
+    const hiddenDiscount = document.getElementById("hiddenDiscountRate");
+    const hiddenChild = document.getElementById("hiddenChildCost");
+    const hiddenTax = document.getElementById("hiddenTax");
+
+    function calculateTotal() {
+      const checkin = new Date(checkinInput.value);
+      const checkout = new Date(checkoutInput.value);
+      const children = parseInt(childrenInput.value) || 0;
+      const nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+
+      if (nights > 0) {
+        const baseCost = nights * pricePerNight;
+        const childCost = children * CHILD_CHARGE;
+        let subtotal = baseCost + childCost;
+
+        const promo = promoCodeInput.value.trim().toUpperCase();
+        const discountRate = promoCodes[promo] || 0;
+        subtotal -= subtotal * discountRate;
+
+        const tax = subtotal * GST_RATE;
+        const total = Math.round(subtotal + tax);
+
+        totalPriceInput.value = `₹${total} (incl. tax${discountRate > 0 ? ` & ${discountRate * 100}% off` : ''})`;
+
+        // Set hidden inputs
+        hiddenTotal.value = total;
+        hiddenNights.value = nights;
+        hiddenDiscount.value = discountRate;
+        hiddenChild.value = childCost;
+        hiddenTax.value = Math.round(tax);
+      } else {
+        totalPriceInput.value = "Please select valid dates";
+        hiddenTotal.value = "";
+        hiddenNights.value = "";
+        hiddenDiscount.value = "";
+        hiddenChild.value = "";
+        hiddenTax.value = "";
+      }
+    }
+
+    [checkinInput, checkoutInput, childrenInput, promoCodeInput].forEach(input => {
+      input.addEventListener("input", calculateTotal);
+      input.addEventListener("change", calculateTotal);
+    });
+  });
+</script>

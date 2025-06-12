@@ -1,0 +1,110 @@
+<% layout("/layouts/boilerplate") %>
+
+
+
+
+<div class="container my-5">
+  <div class="card shadow-lg border-0 rounded-4 p-4">
+    <div class="text-center mb-2">
+  <h3 class="fw-bold" style="margin-bottom: 0;">WonderNest</h3>
+  <small class="text-muted">Booking Invoice</small>
+</div>
+<hr class="mb-4">
+
+    <div class="row">
+      <div class="col-md-6">
+        <h5 class="fw-bold">🏠 Stay Info</h5>
+        <p><strong>Listing:</strong> <%= booking.listingTitle %></p>
+        <p><strong>Check-in:</strong> <%= booking.checkin %></p>
+        <p><strong>Check-out:</strong> <%= booking.checkout %></p>
+        <p><strong>Nights:</strong> <%= booking.nights %></p>
+      </div>
+
+      <div class="col-md-6">
+        <h5 class="fw-bold">🧍 Guest Info</h5>
+        <p><strong>Name:</strong> <%= booking.fullname %></p>
+        <p><strong>Email:</strong> <%= booking.email %></p>
+        <p><strong>Phone:</strong> <%= booking.phone %></p>
+        <p><strong>Guests:</strong> <%= booking.guests %></p>
+        <p><strong>Children:</strong> <%= booking.children %></p>
+      </div>
+    </div>
+
+    <% if (booking.specialRequests) { %>
+      <hr />
+      <div class="mt-3">
+        <h5 class="fw-bold">📝 Special Requests</h5>
+        <p><%= booking.specialRequests %></p>
+      </div>
+    <% } %>
+
+    <hr />
+
+    <h5 class="fw-bold mb-3">💰 Price Breakdown</h5>
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <td>Base Price</td>
+          <td>₹<%= booking.nights %> × ₹<%= booking.pricePerNight %> = ₹<%= booking.nights * booking.pricePerNight %></td>
+        </tr>
+        <tr>
+          <td>Child Charges</td>
+          <td>₹<%= booking.childCost %></td>
+        </tr>
+        <% if (booking.discountRate > 0) { %>
+          <tr>
+            <td>Promo (<%= booking.promoCode.toUpperCase() %>)</td>
+            <td>-<%= booking.discountRate * 100 %>%</td>
+          </tr>
+        <% } %>
+        <tr>
+          <td>GST (13%)</td>
+          <td>₹<%= booking.tax %></td>
+        </tr>
+        <tr class="table-success fw-bold">
+          <td>Total Amount</td>
+          <td>₹<%= booking.totalPrice %></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="text-center mt-4">
+      <a href="/listings" class="btn btn-outline-dark me-2">⬅ Back to Listings</a>
+      <button onclick="window.print()" class="btn btn-dark">🖨 Print Invoice</button>
+     </div>
+
+     <div class="text-center mt-5">
+  <em>🙏 Thank you for booking with WonderNest. We hope you have a peaceful and joyful stay!</em>
+</div>
+
+     <div class="terms mt-4">
+        <hr />
+<div class="mt-4">
+  <h5 class="fw-bold">📄 Terms & Conditions</h5>
+  <ul style="padding-left: 1.2rem;">
+    <li>All bookings are subject to availability.</li>
+    <li>Guests must provide valid ID during check-in.</li>
+    <li>Check-in time: 12:00 PM | Check-out time: 11:00 AM.</li>
+    <li>Cancellation policies may apply as per listing terms.</li>
+    <li>No refunds for no-shows or early check-outs.</li>
+    <li>Guests are responsible for any damage to property.</li>
+  </ul>
+</div>
+<hr />
+<div class="mt-4">
+  <h5 class="fw-bold">🧾 Tax & Additional Charges</h5>
+  <ul style="padding-left: 1.2rem;">
+    <li>Base price includes standard accommodation charges.</li>
+    <li>13% GST (Goods & Services Tax) is added to the subtotal.</li>
+    <li>Child charges are applied at ₹<%= booking.childCost %> if applicable.</li>
+    <% if (booking.discountRate > 0) { %>
+      <li>Promo code "<%= booking.promoCode.toUpperCase() %>" applied with <%= booking.discountRate * 100 %>% discount.</li>
+    <% } %>
+    <li>Total amount is inclusive of all applicable taxes.</li>
+  </ul>
+</div>
+
+
+     </div>
+  </div>
+</div>
