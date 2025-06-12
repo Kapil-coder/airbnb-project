@@ -33,7 +33,8 @@ body{
     font-size: 2.2rem;
 }
 
-.brand-name{
+.brand-name
+{
   color: #fe424d;
   text-decoration: none;
   font-weight: bolder;

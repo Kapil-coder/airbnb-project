@@ -4,7 +4,7 @@
     <h3><b><%= listing.title%></b></h3>
   </div>
 
-  <div class="card col-6 offset-3 card-show listing-card">
+  <div class="card col-12 col-md-6 offset-md-3 card-show listing-card">
     <img
       src="<%= listing.image.url %>"
       class="card-img-top show-img"
@@ -115,7 +115,7 @@
   
   <% } %>
 
-  <div class="col-8 offset-3 mb-3">
+  <div class="col-12 col-md-6 offset-md-3 text-center text-md-start">
     <hr />
     <% if(CurrentUser){ %>
     <h4>Leave a Review</h4>
@@ -126,7 +126,7 @@
       novalidate
       class="needs-validation"
     >
-      <div class="mb-3 mt-3">
+      <div class="mb-3 mt-3 text-start" >
         <label for="rating" class="form-label">Rating</label>
         <fieldset class="starability-slot">
           <input
@@ -175,7 +175,7 @@
           <label for="first-rate5" title="Amazing">5 stars</label>
         </fieldset>
       </div>
-      <div class="mb-3 mt-3">
+      <div class="mb-3 mt-3 text-start">
         <label for="comment" class="form-label">Comments</label>
         <textarea
           name="review[comment]"
@@ -195,7 +195,7 @@
     <p><b>All Reviews</b></p>
     <div class="row">
       <% for(review of listing.review){ %>
-      <div class="card col-5 mb-3 ms-3">
+      <div class="card col-12 col-md-5 mb-3 ms-md-3">
         <div class="card-body">
           <h5 class="card-title">@<%= review.author.username %></h5>
           <p
