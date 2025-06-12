@@ -30,8 +30,8 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wandernest";
-const dbUrl= process.env.ATLASDB_URL
+
+const dbUrl= process.env.MONGO_URL;
 
 async function main() {
   await mongoose.connect(dbUrl);
@@ -44,6 +44,7 @@ main()
   .catch((err) => console.log(err));
 
 
+
  
   const store = MongoStore.create({
   mongoUrl: dbUrl,
@@ -52,13 +53,16 @@ main()
    touchAfter: 24*3600,
 })
 
+
+
+
 const sessionOptions= {
      store,
     secret:process.env.SECRET,
     resave:false,
     saveUninitialized:true,
     cookie:{
-        expires: Date.now()+7*24*60*50*1000,
+        expires: Date.now()+7*24*60*60*1000,
         maxAge:7*24*60*60*1000,
         httpOnly:true
     }
